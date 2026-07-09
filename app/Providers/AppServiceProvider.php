@@ -32,6 +32,21 @@ class AppServiceProvider extends ServiceProvider
             config(['database.default' => 'sqlite']);
             config(['database.connections.sqlite.database' => $dbPath]);
             
+            // Create writable directories in /tmp for storage, cache, session and views compiling
+            $storageTmp = '/tmp/storage';
+            if (!file_exists($storageTmp)) {
+                @mkdir($storageTmp, 0755, true);
+                @mkdir("$storageTmp/framework/views", 0755, true);
+                @mkdir("$storageTmp/framework/sessions", 0755, true);
+                @mkdir("$storageTmp/framework/cache/data", 0755, true);
+            }
+            
+            // Overwrite configurations at runtime
+            config(['view.compiled' => "$storageTmp/framework/views"]);
+            config(['session.files' => "$storageTmp/framework/sessions"]);
+            config(['cache.stores.file.path' => "$storageTmp/framework/cache/data"]);
+            config(['logging.default' => 'stderr']); // Redirect logging away from file system to standard error output
+            
             // Create the database file if it doesn't exist
             if (!file_exists($dbPath)) {
                 touch($dbPath);
