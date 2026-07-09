@@ -23,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
         if (isset($_SERVER['VERCEL']) || env('VERCEL') || env('APP_ENV') === 'production') {
             $dbPath = '/tmp/database.sqlite';
             
+            // Set fallback encryption key if empty to prevent boot crashes
+            if (!config('app.key')) {
+                config(['app.key' => 'base64:zaldpedia12345678901234567890123456789012=']);
+            }
+            
             // Force application connection to local SQLite database in the writable /tmp partition
             config(['database.default' => 'sqlite']);
             config(['database.connections.sqlite.database' => $dbPath]);
