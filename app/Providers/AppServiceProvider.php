@@ -49,13 +49,19 @@ class AppServiceProvider extends ServiceProvider
             
             // Create the database file if it doesn't exist
             if (!file_exists($dbPath)) {
-                touch($dbPath);
-                
-                // Force run database schema migrations on-the-fly
+                @touch($dbPath);
+            }
+            
+            // Check if tables exist, if not, force run database schema migrations on-the-fly
+            try {
+                if (!\Illuminate\Support\Facades\Schema::hasTable('services')) {
+                    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                }
+            } catch (\Exception $e) {
                 try {
                     \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-                } catch (\Exception $e) {
-                    logger('On-the-fly serverless migration failed: ' . $e->getMessage());
+                } catch (\Exception $ex) {
+                    logger('On-the-fly serverless migration failed: ' . $ex->getMessage());
                 }
             }
         }

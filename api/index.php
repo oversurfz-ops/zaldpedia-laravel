@@ -1,14 +1,20 @@
 <?php
 
-// Writable storage directories for Vercel cloud environment
 if (isset($_SERVER['VERCEL']) || getenv('VERCEL')) {
     $storageTmp = '/tmp/storage';
-    if (!file_exists($storageTmp)) {
-        @mkdir($storageTmp, 0755, true);
-        @mkdir("$storageTmp/framework/views", 0755, true);
-        @mkdir("$storageTmp/framework/cache/data", 0755, true);
-        @mkdir("$storageTmp/framework/sessions", 0755, true);
-        @mkdir("$storageTmp/logs", 0755, true);
+    $dirs = [
+        $storageTmp,
+        "$storageTmp/framework",
+        "$storageTmp/framework/views",
+        "$storageTmp/framework/cache",
+        "$storageTmp/framework/cache/data",
+        "$storageTmp/framework/sessions",
+        "$storageTmp/logs"
+    ];
+    foreach ($dirs as $dir) {
+        if (!file_exists($dir)) {
+            @mkdir($dir, 0755, true);
+        }
     }
 }
 
