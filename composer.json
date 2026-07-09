@@ -77,6 +77,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "ignore-platform-reqs": true,
+        "run-scripts": false,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
