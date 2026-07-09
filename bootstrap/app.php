@@ -18,7 +18,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })->create();
 
 // Force the storage path to /tmp/storage on Vercel to bypass read-only workspace restriction
-if (isset($_SERVER['VERCEL']) || env('VERCEL') || env('APP_ENV') === 'production') {
+if (isset($_SERVER['VERCEL']) || getenv('VERCEL') || getenv('APP_ENV') === 'production') {
     $app->useStoragePath('/tmp/storage');
 }
 
